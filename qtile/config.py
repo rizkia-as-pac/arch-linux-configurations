@@ -1,9 +1,12 @@
-from libqtile import bar, layout, widget
+from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+import subprocess
+import os
 
 mod = "mod4"
+modAlt = "mod1"
 terminal = guess_terminal()
 
 keys = [
@@ -16,7 +19,9 @@ keys = [
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
 
 
-    Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([modAlt], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
+
+    Key([mod], 'Tab', lazy.next_screen(), desc='Next monitor'),
 
 
 
@@ -68,37 +73,89 @@ keys = [
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
 ]
 
-groups = [Group(i) for i in "qwe12345"]
+groups = [
+    # Screen affinity here is used to make
+    # sure the groups startup on the right screens
+    Group(name="q", screen_affinity=0),
+    Group(name="w", screen_affinity=0),
+    Group(name="e", screen_affinity=0),
+    Group(name="1", screen_affinity=1),
+    Group(name="2", screen_affinity=1),
+    Group(name="3", screen_affinity=1),
+    Group(name="4", screen_affinity=1),
+    Group(name="5", screen_affinity=1),
+]
+
+def go_to_group(name: str):
+    def _inner(qtile):
+        if len(qtile.screens) == 1:
+            qtile.groups_map[name].toscreen()
+            return
+
+        if name in '12345':
+            qtile.focus_screen(1)
+            qtile.groups_map[name].toscreen()
+        else:
+            qtile.focus_screen(0)
+            qtile.groups_map[name].toscreen()
+
+    return _inner
 
 for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            Key(
-                [mod],
-                i.name,
-                lazy.group[i.name].toscreen(),
-                desc="Switch to group {}".format(i.name),
-            ),
+    keys.append(Key([mod], i.name, lazy.function(go_to_group(i.name))))
 
-        ]
-    )
+
+
+
+# L A Y O U T S
+
+
+
 
 layouts = [
-    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
-    layout.Max(),
-    # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
+    layout.Columns( margin= [10,10,10,10], border_focus_stack='#1F1D2E',
+	    border_normal='#1F1D2E',
+        border_width=2,
+    ),
+
+    layout.Max(	border_focus='#1F1D2E',
+	    border_normal='#1F1D2E',
+	    margin=10,
+	    border_width=0,
+    ),
+
+#     layout.Floating(	border_focus='#1F1D2E',
+# 	    border_normal='#1F1D2E',
+# 	    margin=10,
+# 	    border_width=0,
+# 	),
+#     # Try more layouts by unleashing below layouts
+#    #  layout.Stack(num_stacks=2),
+#    #  layout.Bsp(),
+#      layout.Matrix(	border_focus='#1F1D2E',
+# 	    border_normal='#1F1D2E',
+# 	    margin=10,
+# 	    border_width=0,
+# 	),
+#      layout.MonadTall(	border_focus='#1F1D2E',
+# 	    border_normal='#1F1D2E',
+#         margin=10,
+# 	    border_width=0,
+# 	),
+#     layout.MonadWide(	border_focus='#1F1D2E',
+# 	    border_normal='#1F1D2E',
+# 	    margin=10,
+# 	    border_width=0,
+# 	),
+#    #  layout.RatioTile(),
+#      layout.Tile(	border_focus='#1F1D2E',
+# 	    border_normal='#1F1D2E',
+#     ),
+   #  layout.TreeTab(),
+   #  layout.VerticalTile(),
+   #  layout.Zoomy(),
 ]
+
 
 widget_defaults = dict(
     font="sans",
@@ -109,7 +166,7 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
-        bottom=bar.Bar(
+        top=bar.Bar(
             [
                 widget.CurrentLayout(),
                 widget.GroupBox(),
@@ -125,7 +182,7 @@ screens = [
                 widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
-                widget.Systray(),
+                # widget.Systray(),
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
                 widget.QuickExit(),
             ],
@@ -139,7 +196,7 @@ screens = [
         # x11_drag_polling_rate = 60,
     ),
     Screen(
-        bottom=bar.Bar(
+        top=bar.Bar(
             [
                 widget.CurrentLayout(),
                 widget.GroupBox(),
@@ -155,7 +212,7 @@ screens = [
                 widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
-                widget.Systray(),
+                # widget.Systray(),
                 widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
                 widget.QuickExit(),
             ],
@@ -171,6 +228,15 @@ screens = [
     
     
 ]
+
+# HOME = os.path.expanduser('~')
+# AUTOSTART = f'{HOME}/.config/qtile/autostart.sh'
+# @hook.subscribe.startup
+# def autostart():
+#     """ Executes a script on qtile startup """
+#     home = os.path.expanduser(AUTOSTART)
+#     subprocess.call([home])
+
 
 # Drag floating layouts.
 mouse = [

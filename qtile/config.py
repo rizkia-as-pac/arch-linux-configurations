@@ -113,22 +113,23 @@ for i in groups:
 
 
 layouts = [
-    layout.Columns( margin= [10,10,10,10], border_focus_stack='#1F1D2E',
+    layout.Columns( margin= [10,10,10,10],
+        border_focus="#FFF",
 	    border_normal='#1F1D2E',
         border_width=2,
     ),
 
-    layout.Max(	border_focus='#1F1D2E',
+    layout.Max(	border_focus='#FFF',
 	    border_normal='#1F1D2E',
 	    margin=10,
-	    border_width=0,
+	    border_width=2,
     ),
 
-#     layout.Floating(	border_focus='#1F1D2E',
-# 	    border_normal='#1F1D2E',
-# 	    margin=10,
-# 	    border_width=0,
-# 	),
+    # layout.Floating(	border_focus='#1F1D2E',
+	#     border_normal='#1F1D2E',
+	#     margin=10,
+	#     border_width=0,
+	# ),
 #     # Try more layouts by unleashing below layouts
 #    #  layout.Stack(num_stacks=2),
 #    #  layout.Bsp(),
@@ -229,13 +230,13 @@ screens = [
     
 ]
 
-# HOME = os.path.expanduser('~')
-# AUTOSTART = f'{HOME}/.config/qtile/autostart.sh'
-# @hook.subscribe.startup
-# def autostart():
-#     """ Executes a script on qtile startup """
-#     home = os.path.expanduser(AUTOSTART)
-#     subprocess.call([home])
+HOME = os.path.expanduser('~')
+AUTOSTART = f'{HOME}/.config/qtile/autostart.sh'
+@hook.subscribe.startup
+def autostart():
+    """ Executes a script on qtile startup """
+    home = os.path.expanduser(AUTOSTART)
+    subprocess.call([home])
 
 
 # Drag floating layouts.

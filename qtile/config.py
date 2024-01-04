@@ -142,7 +142,7 @@ layouts = [
 # ██████╦╝██║░░██║██║░░██║
 # ╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝
 decorations=[RectDecoration(group=True, use_widget_background=True, clip=True, radius=3, filled=True, padding_y=3, padding_x=0)]
-decorations_github=[RectDecoration(group=True, use_widget_background=True, clip=True, radius=14, filled=True)]
+decorations_github=[RectDecoration(group=True, use_widget_background=True, clip=True, radius=14,    filled=True)]
 
 widget_defaults = dict(
     font=WIDGET_FONT,
@@ -226,6 +226,8 @@ main_top_widgets = [
     main_groupbox,
 
     widget.Spacer(10),
+
+    widget.Prompt(),
     
     # widget.Mpris2(
     #     name="spotify",
@@ -406,7 +408,7 @@ bar_style = dict(
     border_width=0)
 
 main_bar = bar.Bar(widgets=main_top_widgets, size=25, **bar_style)
-secondary_bar = bar.Bar(widgets=secondary_top_widgets, size=25, **bar_style)
+secondary_bar = bar.Bar(widgets=secondary_top_widgets, size=25, **bar_style)    
 
 screens = [
     Screen(top=main_bar),

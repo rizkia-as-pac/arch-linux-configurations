@@ -1,4 +1,4 @@
-from libqtile import bar, layout, widget, hook
+from libqtile import bar, layout, widget, hook, qtile
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
@@ -12,12 +12,38 @@ from colors.catppuccin import Catppuccin
 mod = "mod4"
 modAlt = "mod1"
 terminal = guess_terminal()
-
+HOME = os.path.expanduser('~')
 
 WIDGET_FONT = "Iosevka Nerd Font"
 COLOR = Catppuccin()
 
 APP_AUDIO_SETTINGS = "pavucontrol"
+
+MENU_WIFI = f"{HOME}/.config/qtile/nmtui.sh" 
+MENU_APP = f"{HOME}/.config/rofi/launcher/run.sh &"
+MENU_POWER = f"{HOME}/.config/rofi/powermenu/run.sh &" 
+HTOP = f"{HOME}/.config/qtile/htop.sh" 
+
+WIDGET_BATTERY = f"{HOME}/.config/qtile/battery-icon.sh" 
+WIDGET_INTERNET = f"{HOME}/.config/qtile/net.sh" 
+
+def get_monitors():
+    """ Get number of connected monitors """
+    xr = subprocess.check_output(
+        'xrandr --query | grep " connected"', shell=True).decode().split('\n')
+    print(xr)
+    monitors = len(xr) - 1 if len(xr) > 2 else len(xr)
+    return monitors
+
+def get_number_of_monitors():
+    try:
+        output = subprocess.check_output(["xrandr", "--query"]).decode("utf-8")
+        connected_monitors = [line for line in output.splitlines() if " connected" in line]
+        return len(connected_monitors)
+    except subprocess.CalledProcessError:
+        return 0
+
+MONITORS = get_number_of_monitors()
 
 
 
@@ -60,7 +86,16 @@ keys = [
     ),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+
+    # Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "r", lazy.spawn(MENU_APP), desc="Open App Menu"),
+
+    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 10%+"), desc='brightness UP'),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 10%-"), desc='brightness Down'),
+    
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 0 +5%"), desc='Volume Up'),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 0 -5%"), desc='volume down'),
+    Key([], "XF86AudioMute", lazy.spawn("pactl set-sink-mute 0 toggle"), desc='Volume Mute'),
 ]
 
 
@@ -155,6 +190,27 @@ icons_defaults = dict(
     fontsize=14,
     padding=10)
 
+if MONITORS > 1 :
+    
+    vg1 = [
+        groups[0].name,
+        groups[1].name,
+        groups[2].name,
+    ]
+
+else :
+    vg1 = [
+        groups[0].name,
+        groups[1].name,
+        groups[2].name,
+        groups[3].name,
+        groups[4].name,
+        groups[5].name,
+        groups[6].name,
+        groups[7].name,
+    ]
+    
+
 main_groupbox = widget.GroupBox(
     active=COLOR.groupbox_active,
     background=COLOR.groupbox_background,
@@ -170,11 +226,7 @@ main_groupbox = widget.GroupBox(
     borderwidth=1,
     decorations=decorations,
     padding=12,
-    visible_groups=[
-        groups[0].name,
-        groups[1].name,
-        groups[2].name,
-    ]
+    visible_groups=vg1
     )
 
 secondary_groupbox = widget.GroupBox(
@@ -201,11 +253,18 @@ secondary_groupbox = widget.GroupBox(
 
 extension_defaults = widget_defaults.copy()
 
+
+
 main_top_widgets = [
     
     widget.Spacer(15),
 
-    widget.TextBox("", fontsize=20, foreground="#08F"),
+    widget.TextBox("", 
+        fontsize=20,
+        mouse_callbacks={
+            "Button3": lambda : qtile.spawn(MENU_POWER)
+        },
+        foreground="#08F",),
 
     widget.Spacer(5),
 
@@ -266,25 +325,30 @@ main_top_widgets = [
    
     widget.Spacer(),
 
-# # NO
-# # #     widget.CPU(
-# # #        background=COLOR.cpu.bg,
-# # #        foreground=COLOR.cpu.fg,
-# # #        decorations=decorations
-# # #    ),
+    widget.CPU(
+        background=COLOR.cpu.bg,
+        foreground=COLOR.cpu.fg,
+        mouse_callbacks={
+            "Button3": lambda : qtile.spawn(HTOP)
+        },
+        decorations=decorations
+    ),
+    
+    widget.Spacer(5),
 
-# # #    widget.Spacer(5),
+    widget.Memory(
+        format='RAM {MemUsed: .3f}{mm} / {MemTotal: .3f}{mm}',
+        measure_mem='G',
+        background=COLOR.ram.bg,
+        foreground=COLOR.ram.fg,
+        mouse_callbacks={
+            "Button3": lambda : qtile.spawn(HTOP)
+        },
+        decorations=decorations,
+        **widget_defaults
+    ),
+    widget.Spacer(5),
 
-# # #    widget.Memory(
-# # #        format='RAM {MemUsed: .3f}{mm} / {MemTotal: .3f}{mm}',
-# # #        measure_mem='G',
-# # #        background=COLOR.ram.bg,
-# # #        foreground=COLOR.ram.fg,
-# # #        decorations=decorations,
-# # #        **widget_defaults),
-
-# # #   widget.Spacer(5),
-# # NO
 
     widget.CheckUpdates(
         display_format="  {updates}",
@@ -293,18 +357,21 @@ main_top_widgets = [
         no_update_string="",
         decorations=decorations),
 
-    # widget.Spacer(5),
+    widget.Spacer(5),
 
-#     # Internet Widget
-#     widget.GenPollText(
-#         func=lambda: subprocess.check_output(WIDGET_INTERNET).decode(),
-#         update_interval=1, 
-#         background=COLOR.Blue,
-#         foreground=COLOR.Crust,
-#         decorations=decorations,
-#         max_chars=20,
-#         **widget_defaults
-#     ),
+    # Internet Widget
+    widget.GenPollText(
+        func=lambda: subprocess.check_output(WIDGET_INTERNET).decode(),
+        mouse_callbacks={
+            "Button3": lambda : qtile.spawn(MENU_WIFI)
+        },
+        update_interval=1, 
+        background=COLOR.Blue,
+        foreground=COLOR.Crust,
+        decorations=decorations,
+        max_chars=20,
+        **widget_defaults
+    ),
 
     widget.Spacer(5),
     
@@ -318,35 +385,35 @@ main_top_widgets = [
         decorations=decorations,
         **widget_defaults),
 
-    # widget.Spacer(5),
+    widget.Spacer(5),
     
-#     # Battery Widget
-#     widget.GenPollText(
-#         func=lambda: subprocess.check_output(WIDGET_BATTERY).decode(),
-#         update_interval=1, 
-#         background=COLOR.battery_icon.bg,
-#         foreground=COLOR.battery_icon.fg,
-#         decorations=decorations,
-#         **icons_defaults
-#     ),
+    # Battery Widget
+    widget.GenPollText(
+        func=lambda: subprocess.check_output(WIDGET_BATTERY).decode(),
+        update_interval=1, 
+        background=COLOR.battery_icon.bg,
+        foreground=COLOR.battery_icon.fg,
+        decorations=decorations,
+        **icons_defaults
+    ),
     
-#     widget.Battery(
-#         background=COLOR.battery.bg,
-#         foreground=COLOR.battery.fg,
-#         low_background=COLOR.battery_low.bg,
-#         low_foreground=COLOR.battery_low.fg,
-#         low_percentage=0.40,
-#         notify_below=20,
-#         charge_char="  ",
-#         full_char="  ",
-#         discharge_char="",
-#         unknown_char="? ",
-#         show_short_text=False,
-#         decorations=decorations,
-#         format='{percent:2.0%} {char}',
-#         update_interval=2,
-#         padding=0
-#     ),
+    widget.Battery(
+        background=COLOR.battery.bg,
+        foreground=COLOR.battery.fg,
+        low_background=COLOR.battery_low.bg,
+        low_foreground=COLOR.battery_low.fg,
+        low_percentage=0.40,
+        notify_below=20,
+        charge_char="  ",
+        full_char="  ",
+        discharge_char="",
+        unknown_char="? ",
+        show_short_text=False,
+        decorations=decorations,
+        format='{percent:2.0%} {char}',
+        update_interval=2,
+        padding=0
+    ),
 
     widget.Spacer(5),
 
@@ -408,15 +475,18 @@ bar_style = dict(
     border_width=0)
 
 main_bar = bar.Bar(widgets=main_top_widgets, size=25, **bar_style)
-secondary_bar = bar.Bar(widgets=secondary_top_widgets, size=25, **bar_style)    
+secondary_bar = bar.Bar(widgets=secondary_top_widgets, size=25, **bar_style)
 
-screens = [
-    Screen(top=main_bar),
-    
-    Screen(top=secondary_bar),
-]
+screens = []
+for monitor in range(MONITORS):
 
+    if monitor == 0:
+        # Primary monitor
+        screens.append(Screen(top=main_bar))
 
+    else:
+        # Secondary monitors
+        screens.append(Screen(top=secondary_bar))
 
 
 

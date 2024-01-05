@@ -67,7 +67,6 @@ keys = [
 
 
 
-
 # ░██████╗░██████╗░░█████╗░██╗░░░██╗██████╗░░██████╗
 # ██╔════╝░██╔══██╗██╔══██╗██║░░░██║██╔══██╗██╔════╝
 # ██║░░██╗░██████╔╝██║░░██║██║░░░██║██████╔╝╚█████╗░
@@ -77,15 +76,16 @@ keys = [
 groups = [
     # Screen affinity here is used to make
     # sure the groups startup on the right screens
-    Group(name="q", screen_affinity=0),
-    Group(name="w", screen_affinity=0),
-    Group(name="e", screen_affinity=0),
-    Group(name="1", screen_affinity=1),
-    Group(name="2", screen_affinity=1),
-    Group(name="3", screen_affinity=1),
-    Group(name="4", screen_affinity=1),
-    Group(name="5", screen_affinity=1),
+    Group(name="q", screen_affinity=0, ),
+    Group(name="w", screen_affinity=0, label="", matches=[Match(wm_class="code")]),
+    Group(name="e", screen_affinity=0,),
+    Group(name="1", screen_affinity=1, label=" ₁"),
+    Group(name="2", screen_affinity=1, label=" ₂", matches=[Match(wm_class="google-chrome-stable")]),
+    Group(name="3", screen_affinity=1,),
+    Group(name="4", screen_affinity=1, label=" ₄"),
+    Group(name="5", screen_affinity=1, label=" ₅"),
 ]
+
 
 def go_to_group(name: str):
     def _inner(qtile):
@@ -196,7 +196,7 @@ secondary_groupbox = widget.GroupBox(
         groups[3].name,
         groups[4].name,
         groups[5].name,
-        groups[7].name,
+        groups[6].name,
     ])
 
 extension_defaults = widget_defaults.copy()

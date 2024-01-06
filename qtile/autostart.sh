@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Update screens
+autorandr --change
+
 # Set wallpaper
 # ~/.fehbg &
 nitrogen --restore
 
-# Update screens
-autorandr --change
+# Send welcome notification
+notify-send "Welcome"

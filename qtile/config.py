@@ -116,7 +116,7 @@ groups = [
     Group(name="w", screen_affinity=0, label="", matches=[Match(wm_class="code")]),
     Group(name="e", screen_affinity=0,),
     Group(name="1", screen_affinity=1, label=" ₁"),
-    Group(name="2", screen_affinity=1, label=" ₂", matches=[Match(wm_class="google-chrome-stable")]),
+    Group(name="2", screen_affinity=1, label=" ₂",),
     Group(name="3", screen_affinity=1,),
     Group(name="4", screen_affinity=1, label=" ₄"),
     Group(name="5", screen_affinity=1, label=" ₅"),

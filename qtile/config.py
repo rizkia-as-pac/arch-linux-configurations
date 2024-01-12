@@ -9,6 +9,8 @@ import os
 
 from colors.catppuccin import Catppuccin
 
+from colors.color import cs_from_json
+
 mod = "mod4"
 modAlt = "mod1"
 terminal = guess_terminal()
@@ -17,23 +19,23 @@ HOME = os.path.expanduser('~')
 WIDGET_FONT = "Iosevka Nerd Font"
 COLOR = Catppuccin()
 
+# Color Scheme
+color_scheme_path = "/home/rizkia/.config/color_scheme.json"
+CS =  cs_from_json(color_scheme_path)
+
 APP_AUDIO_SETTINGS = "pavucontrol"
 
-MENU_WIFI = f"{HOME}/.config/qtile/nmtui.sh" 
+# SHELL APP's
+MENU_WIFI = f"{HOME}/.config/sh/nmtui.sh" 
+HTOP = f"{HOME}/.config/sh/htop.sh" 
+
+# ROFI
 MENU_APP = f"{HOME}/.config/rofi/launcher/run.sh &"
 MENU_POWER = f"{HOME}/.config/rofi/powermenu/run.sh &" 
-HTOP = f"{HOME}/.config/qtile/htop.sh" 
+MENU_UTIL = f"{HOME}/.config/rofi/utilmenu/run.sh &" 
 
-WIDGET_BATTERY = f"{HOME}/.config/qtile/battery-icon.sh" 
-WIDGET_INTERNET = f"{HOME}/.config/qtile/net.sh" 
-
-def get_monitors():
-    """ Get number of connected monitors """
-    xr = subprocess.check_output(
-        'xrandr --query | grep " connected"', shell=True).decode().split('\n')
-    print(xr)
-    monitors = len(xr) - 1 if len(xr) > 2 else len(xr)
-    return monitors
+WIDGET_BATTERY = f"{HOME}/.config/sh/battery-icon.sh" 
+WIDGET_INTERNET = f"{HOME}/.config/sh/net.sh" 
 
 def get_number_of_monitors():
     try:
@@ -77,7 +79,7 @@ keys = [
 
     Key([mod], "Escape", lazy.next_layout(), desc="Toggle between layouts"),
 
-    Key([mod], "c", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod], "t", lazy.window.kill(), desc="Kill focused window"),
     Key(
         [mod],
         "f",
@@ -116,7 +118,7 @@ groups = [
     Group(name="w", screen_affinity=0, label="", matches=[Match(wm_class="code")]),
     Group(name="e", screen_affinity=0,),
     Group(name="1", screen_affinity=1, label=" ₁"),
-    Group(name="2", screen_affinity=1, label=" ₂",),
+    Group(name="2", screen_affinity=1, label=" ₂",matches=[Match(wm_class="google-chrome-stable")]),
     Group(name="3", screen_affinity=1,),
     Group(name="4", screen_affinity=1, label=" ₄"),
     Group(name="5", screen_affinity=1, label=" ₅"),
@@ -213,15 +215,15 @@ else :
     
 
 main_groupbox = widget.GroupBox(
-    active=COLOR.groupbox_active,
-    background=COLOR.groupbox_background,
-    inactive=COLOR.groupbox_inactive,
+    active=CS["c_0"],
+    background=CS["c_7"],
+    inactive=CS["c_0"],
     this_screen_border=COLOR.groupbox_this,
     other_screen_border=COLOR.groupbox_other,
     this_current_screen_border=COLOR.groupbox_this_current,
     other_current_screen_border=COLOR.groupbox_other_current,
     highlight_method='line',
-    highlight_color=[COLOR.groupbox_this, COLOR.groupbox_this],
+    highlight_color=[CS["c_3"], CS["c_3"]],
     disable_drag=True,
     # hide_unused=True,
     borderwidth=1,
@@ -231,15 +233,15 @@ main_groupbox = widget.GroupBox(
     )
 
 secondary_groupbox = widget.GroupBox(
-    active=COLOR.groupbox_active,
-    background=COLOR.groupbox_background,
-    inactive=COLOR.groupbox_inactive,
+    active=CS["c_0"],
+    background=CS["c_7"],
+    inactive=CS["c_0"],
     this_screen_border=COLOR.groupbox_this,
     other_screen_border=COLOR.groupbox_other,
     this_current_screen_border=COLOR.groupbox_this_current,
     other_current_screen_border=COLOR.groupbox_other_current,
     highlight_method='line',
-    highlight_color=[COLOR.groupbox_this, COLOR.groupbox_this],
+    highlight_color=[CS["c_3"], CS["c_3"]],
     disable_drag=True,
     # hide_unused=True,
     borderwidth=1,
@@ -250,6 +252,7 @@ secondary_groupbox = widget.GroupBox(
         groups[4].name,
         groups[5].name,
         groups[6].name,
+        # groups[7].name,
     ])
 
 extension_defaults = widget_defaults.copy()
@@ -265,27 +268,25 @@ main_top_widgets = [
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(MENU_POWER)
         },
-        foreground="#08F",),
+        foreground=CS["c_7"],),
 
     widget.Spacer(5),
 
     widget.CurrentLayoutIcon(
-        background=COLOR.current_layout.bg,
-        foreground=COLOR.current_layout.fg,
+        background=CS["c_7"],
+        foreground=CS["c_0"],
         decorations=decorations,
         scale=0.8),
 
     widget.WindowCount(
-        background=COLOR.window_count.bg, 
-        foreground=COLOR.window_count.fg, 
+        background=CS["c_7"], 
+        foreground=CS["c_0"], 
         show_zero=True,
         decorations=decorations),
 
     widget.Spacer(5),
 
     main_groupbox,
-
-    widget.Spacer(10),
 
     widget.Prompt(),
     
@@ -327,8 +328,8 @@ main_top_widgets = [
     widget.Spacer(),
 
     widget.CPU(
-        background=COLOR.cpu.bg,
-        foreground=COLOR.cpu.fg,
+        background=CS["c_4"],
+        foreground="#FFF",
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(HTOP)
         },
@@ -340,8 +341,8 @@ main_top_widgets = [
     widget.Memory(
         format='RAM {MemUsed: .3f}{mm} / {MemTotal: .3f}{mm}',
         measure_mem='G',
-        background=COLOR.ram.bg,
-        foreground=COLOR.ram.fg,
+        background=CS["c_3"],
+        foreground="#FFF",
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(HTOP)
         },
@@ -367,8 +368,8 @@ main_top_widgets = [
             "Button3": lambda : qtile.spawn(MENU_WIFI)
         },
         update_interval=1, 
-        background=COLOR.Blue,
-        foreground=COLOR.Crust,
+        background=CS["c_6"],
+        foreground="#FFF",
         decorations=decorations,
         max_chars=20,
         **widget_defaults
@@ -378,8 +379,8 @@ main_top_widgets = [
     
     widget.Volume(
         fmt="  {}",
-        background=COLOR.audio.bg,
-        foreground=COLOR.audio.fg, 
+        background=CS["c_7"],
+        foreground=CS["c_0"], 
         mouse_callbacks={
             "Button3": lazy.spawn(APP_AUDIO_SETTINGS)
         },
@@ -388,19 +389,18 @@ main_top_widgets = [
 
     widget.Spacer(5),
     
-    # Battery Widget
     widget.GenPollText(
         func=lambda: subprocess.check_output(WIDGET_BATTERY).decode(),
         update_interval=1, 
-        background=COLOR.battery_icon.bg,
-        foreground=COLOR.battery_icon.fg,
+        background=CS["c_7"],
+        foreground=CS["c_0"],
         decorations=decorations,
         **icons_defaults
     ),
     
     widget.Battery(
-        background=COLOR.battery.bg,
-        foreground=COLOR.battery.fg,
+        background=CS["c_7"],
+        foreground=CS["c_0"],
         low_background=COLOR.battery_low.bg,
         low_foreground=COLOR.battery_low.fg,
         low_percentage=0.40,
@@ -420,8 +420,8 @@ main_top_widgets = [
 
     widget.Clock(
         format=f"%H:%M:%S | %d/%m/%y",
-        background=COLOR.clock.bg,
-        foreground=COLOR.clock.fg,
+        background=CS["c_7"],
+        foreground=CS["c_0"],
         decorations=decorations,
         mouse_callbacks={},
         **widget_defaults
@@ -429,7 +429,14 @@ main_top_widgets = [
 
     # widget.Systray(),
 
-    widget.Spacer(10),
+    widget.Spacer(5),
+
+    widget.TextBox("", 
+        fontsize=15,
+        mouse_callbacks={
+            "Button3": lambda : qtile.spawn(MENU_UTIL)
+        },
+        foreground=CS["c_7"],),
 
 #     widget.GithubNotifications(
 #         active_colour=COLOR.github_active,
@@ -470,8 +477,8 @@ secondary_top_widgets = [
 ]
 
 bar_style = dict(
-    background=COLOR.bar.bg,
-    border_color=COLOR.bar.bg,
+    background=CS["c_0"],
+    border_color=CS["c_0"],
     margin=[0, 0, 0, 0],
     border_width=0)
 
@@ -482,11 +489,9 @@ screens = []
 for monitor in range(MONITORS):
 
     if monitor == 0:
-        # Primary monitor
         screens.append(Screen(top=main_bar))
 
     else:
-        # Secondary monitors
         screens.append(Screen(top=secondary_bar))
 
 
@@ -500,10 +505,18 @@ for monitor in range(MONITORS):
 # ╚═╝░░╚═╝░╚════╝░░╚════╝░╚═╝░░╚═╝
 HOME = os.path.expanduser('~')
 AUTOSTART = f'{HOME}/.config/qtile/autostart.sh'
-@hook.subscribe.startup
+@hook.subscribe.startup_once
 def autostart():
     """ Executes a script on qtile startup """
     home = os.path.expanduser(AUTOSTART)
+    subprocess.call([home])        
+
+
+AUTORELOAD = f'{HOME}/.config/qtile/autoreload.sh'
+@hook.subscribe.startup
+def autoreload():
+    """ Executes a script on qtile startup """
+    home = os.path.expanduser(AUTORELOAD)
     subprocess.call([home])
 
 
@@ -519,9 +532,12 @@ def autostart():
 # ░╚════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚═╝░░╚═╝
 # Drag floating layouts.
 mouse = [
+    # Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    # Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    # Click([mod], "Button2", lazy.window.bring_to_front()),
+    Click([mod], "Button3", lazy.window.toggle_floating()),
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front()),
+
 ]
 
 dgroups_key_binder = None

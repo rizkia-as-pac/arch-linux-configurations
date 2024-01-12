@@ -1,11 +1,8 @@
 #!/bin/bash
 
-# Update screens
-autorandr --change
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-# Set wallpaper
-# ~/.fehbg &
-nitrogen --restore
-
-# Send welcome notification
-notify-send "Welcome"
+# this will start the daemon
+flameshot &
+# this will select a 300 by 200 pixel area, and immediately pin it
+flameshot gui --region 300x200+300+300 --pin --accept-on-select c

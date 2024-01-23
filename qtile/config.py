@@ -90,7 +90,11 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
 
     # Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
-    Key([mod], "r", lazy.spawn(MENU_APP), desc="Open App Menu"),
+    Key([mod], "c", lazy.spawn(MENU_APP), desc="Open App Menu"),
+
+    # Key([mod], "r", lazy.spawn(MENU_APP), desc="Open App Menu"),===========
+    Key([mod], "p", lazy.spawn(MENU_UTIL), desc="Open Util Menu"),
+    Key([mod], "o", lazy.spawn(MENU_POWER), desc="Open Power Menu"),
 
     Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl s 10%+"), desc='brightness UP'),
     Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl s 10%-"), desc='brightness Down'),

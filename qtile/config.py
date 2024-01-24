@@ -11,8 +11,10 @@ from colors.catppuccin import Catppuccin
 
 from colors.color import cs_from_json
 
-mod = "mod4"
-modAlt = "mod1"
+# mod = "mod4"
+mod = "mod1"
+super = "mod4"
+
 terminal = guess_terminal()
 HOME = os.path.expanduser('~')
 
@@ -61,8 +63,8 @@ keys = [
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
 
-    Key([modAlt], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
-    Key([mod], 'Tab', lazy.next_screen(), desc='Next monitor'),
+    Key([mod], "Tab", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([super], 'Tab', lazy.next_screen(), desc='Next monitor'),
 
     Key([mod, "shift"], "Left", lazy.layout.shuffle_left(), desc="Move window to the left"),
     Key([mod, "shift"], "Right", lazy.layout.shuffle_right(), desc="Move window to the right"),

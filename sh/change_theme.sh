@@ -6,6 +6,8 @@ $terminal_emulator -e sh -c "wpg -s \$(wpg -l |fzf)" &&
 
 ~/.config/sh/extract_color_scheme.sh &&
 
+~/.config/helper/extract-kitty-color-scheme/extract-kitty-color-scheme &&
+
 ~/.config/sh/gen_active_wp.sh &&
 
 ~/.config/sh/update_rasi.sh &&

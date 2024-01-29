@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
+
+	"github.com/rizkia-as-actmp/arch-linux-config-helper/helper"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 
 	configFilePath := fmt.Sprintf("%s/.cache/wal/colors-kitty.conf", homeDir)
 
-	colors, err := readConfig(configFilePath)
+	colors, err := helper.ReadConfig(configFilePath)
 	if err != nil {
 		fmt.Println("Error reading config file:", err)
 		return
@@ -33,39 +33,11 @@ func main() {
 
 	outputFilePath := fmt.Sprintf("%s/.config/colors-kitty.json", homeDir)
 
-	err = writeJSON(outputFilePath, jsonData)
+	err = helper.WriteJSON(outputFilePath, jsonData)
 	if err != nil {
 		fmt.Println("Error writing JSON file:", err)
 		return
 	}
-}
-
-
-func readConfig(filePath string) (map[string]string, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	colors := make(map[string]string)
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) > 0 && !strings.HasPrefix(line, "#") {
-			parts := strings.Fields(line)
-			if len(parts) == 2 {
-				colors[parts[0]] = parts[1]
-			}
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return colors, nil
 }
 
 type KittyColorScheme struct {
@@ -93,7 +65,6 @@ type KittyColorScheme struct {
 	Color14           string `json:"Color14"`
 	Color15           string `json:"Color15"`
 }
-
 
 func buildColorSchemeJSON(colors map[string]string) *KittyColorScheme {
 	cs := &KittyColorScheme{
@@ -123,19 +94,4 @@ func buildColorSchemeJSON(colors map[string]string) *KittyColorScheme {
 	}
 
 	return cs
-}
-
-func writeJSON(filePath string, jsonData []byte) error {
-	file, err := os.Create(filePath)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	_, err = file.Write(jsonData)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

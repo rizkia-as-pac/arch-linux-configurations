@@ -14,7 +14,7 @@ $terminal_emulator -e sh -c "wpg -s \$(wpg -l |fzf)" &&
 
 ~/.config/sh/gen_active_wp.sh &&
 
-~/.config/sh/update_rasi.sh &&
+~/.config/sh/update_rofi_theme.sh &&
 
 
 qtile cmd-obj -o cmd -f reload_config

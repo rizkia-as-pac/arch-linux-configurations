@@ -8,28 +8,6 @@ import (
 	"strings"
 )
 
-type ColorSchemeV2 struct {
-	Foreground string `json:"foreground"`
-	Background string `json:"background"`
-	Cursor     string `json:"cursor"`
-	Color0     string `json:"color0"`
-	Color1     string `json:"color1"`
-	Color2     string `json:"color2"`
-	Color3     string `json:"color3"`
-	Color4     string `json:"color4"`
-	Color5     string `json:"color5"`
-	Color6     string `json:"color6"`
-	Color7     string `json:"color7"`
-	Color8     string `json:"color8"`
-	Color9     string `json:"color9"`
-	Color10    string `json:"color10"`
-	Color11    string `json:"color11"`
-	Color12    string `json:"color12"`
-	Color13    string `json:"color13"`
-	Color14    string `json:"color14"`
-	Color15    string `json:"color15"`
-}
-
 func main() {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -39,13 +17,15 @@ func main() {
 
 	configFilePath := fmt.Sprintf("%s/.cache/wal/colors-kitty.conf", homeDir)
 
-	config, err := readConfig(configFilePath)
+	colors, err := readConfig(configFilePath)
 	if err != nil {
 		fmt.Println("Error reading config file:", err)
 		return
 	}
 
-	jsonData, err := json.MarshalIndent(config, "", "  ")
+	cs := buildColorSchemeJSON(colors)
+
+	jsonData, err := json.MarshalIndent(cs, "", "  ")
 	if err != nil {
 		fmt.Println("Error marshalling to JSON:", err)
 		return
@@ -58,6 +38,34 @@ func main() {
 		fmt.Println("Error writing JSON file:", err)
 		return
 	}
+}
+
+
+func readConfig(filePath string) (map[string]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	colors := make(map[string]string)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if len(line) > 0 && !strings.HasPrefix(line, "#") {
+			parts := strings.Fields(line)
+			if len(parts) == 2 {
+				colors[parts[0]] = parts[1]
+			}
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+
+	return colors, nil
 }
 
 type KittyColorScheme struct {
@@ -86,29 +94,8 @@ type KittyColorScheme struct {
 	Color15           string `json:"Color15"`
 }
 
-func readConfig(filePath string) (*KittyColorScheme, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
 
-	colors := make(map[string]string)
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if len(line) > 0 && !strings.HasPrefix(line, "#") {
-			parts := strings.Fields(line)
-			if len(parts) == 2 {
-				colors[parts[0]] = parts[1]
-			}
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
+func buildColorSchemeJSON(colors map[string]string) *KittyColorScheme {
 	cs := &KittyColorScheme{
 		Cursor:            colors["cursor"],
 		Cursor_text_color: colors["background"],
@@ -135,7 +122,7 @@ func readConfig(filePath string) (*KittyColorScheme, error) {
 		Color15:           colors["color15"],
 	}
 
-	return cs, nil
+	return cs
 }
 
 func writeJSON(filePath string, jsonData []byte) error {

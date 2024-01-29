@@ -41,40 +41,42 @@ func main() {
 }
 
 type KittyColorScheme struct {
-	Cursor            string `json:"Cursor"`
-	Cursor_text_color string `json:"Cursor_text_color"`
-	Url_color         string `json:"Url_color"`
-	Bell_border_color string `json:"Bell_border_color"`
-	Mark1_foreground  string `json:"Mark1_foreground"`
-	Mark2_foreground  string `json:"Mark2_foreground"`
-	Mark3_foreground  string `json:"Mark3_foreground"`
-	Color0            string `json:"Color0"`
-	Color1            string `json:"Color1"`
-	Color2            string `json:"Color2"`
-	Color3            string `json:"Color3"`
-	Color4            string `json:"Color4"`
-	Color5            string `json:"Color5"`
-	Color6            string `json:"Color6"`
-	Color7            string `json:"Color7"`
-	Color8            string `json:"Color8"`
-	Color9            string `json:"Color9"`
-	Color10           string `json:"Color10"`
-	Color11           string `json:"Color11"`
-	Color12           string `json:"Color12"`
-	Color13           string `json:"Color13"`
-	Color14           string `json:"Color14"`
-	Color15           string `json:"Color15"`
+	Foreground        string `json:"foreground"`
+	Cursor            string `json:"cursor"`
+	Cursor_text_color string `json:"cursor_text_color"`
+	Url_color         string `json:"url_color"`
+	Bell_border_color string `json:"bell_border_color"`
+	Mark1_foreground  string `json:"mark1_foreground"`
+	Mark2_foreground  string `json:"mark2_foreground"`
+	Mark3_foreground  string `json:"mark3_foreground"`
+	Color0            string `json:"color0"`
+	Color1            string `json:"color1"`
+	Color2            string `json:"color2"`
+	Color3            string `json:"color3"`
+	Color4            string `json:"color4"`
+	Color5            string `json:"color5"`
+	Color6            string `json:"color6"`
+	Color7            string `json:"color7"`
+	Color8            string `json:"color8"`
+	Color9            string `json:"color9"`
+	Color10           string `json:"color10"`
+	Color11           string `json:"color11"`
+	Color12           string `json:"color12"`
+	Color13           string `json:"color13"`
+	Color14           string `json:"color14"`
+	Color15           string `json:"color15"`
 }
 
 func buildColorSchemeJSON(colors map[string]string) *KittyColorScheme {
 	cs := &KittyColorScheme{
-		Cursor:            colors["cursor"],
+		Foreground:        colors["foreground"],
 		Cursor_text_color: colors["background"],
-		Url_color:         colors["cursor"],
-		Bell_border_color: colors["color3"],
 		Mark1_foreground:  colors["background"],
 		Mark2_foreground:  colors["background"],
 		Mark3_foreground:  colors["background"],
+		Cursor:            colors["cursor"],
+		Url_color:         colors["cursor"],
+		Bell_border_color: colors["color3"],
 		Color0:            colors["color0"],
 		Color1:            colors["color1"],
 		Color2:            colors["color2"],

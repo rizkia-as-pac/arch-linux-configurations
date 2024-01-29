@@ -347,7 +347,7 @@ main_top_widgets = [
     widget.Memory(
         format='RAM {MemUsed: .3f}{mm} / {MemTotal: .3f}{mm}',
         measure_mem='G',
-        background=CS["color1"],
+        background=CS["color3"],
         foreground=CS["color0"],
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(HTOP)
@@ -374,7 +374,7 @@ main_top_widgets = [
             "Button3": lambda : qtile.spawn(MENU_WIFI)
         },
         update_interval=1, 
-        background=CS["color8"],
+        background=CS["color2"],
         foreground=CS["color0"],
         decorations=decorations,
         max_chars=20,

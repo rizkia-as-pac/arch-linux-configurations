@@ -22,7 +22,7 @@ WIDGET_FONT = "Iosevka Nerd Font"
 COLOR = Catppuccin()
 
 # Color Scheme
-color_scheme_path = "/home/rizkia/.config/color_scheme.json"
+color_scheme_path = "/home/rizkia/.config/colors-kitty.json"
 CS =  cs_from_json(color_scheme_path)
 
 APP_AUDIO_SETTINGS = "pavucontrol"
@@ -221,15 +221,15 @@ else :
     
 
 main_groupbox = widget.GroupBox(
-    active=CS["c_0"],
-    background=CS["c_7"],
-    inactive=CS["c_0"],
+    active=CS["background"],
+    background=CS["color7"],
+    inactive=CS["background"],
     this_screen_border=COLOR.groupbox_this,
     other_screen_border=COLOR.groupbox_other,
     this_current_screen_border=COLOR.groupbox_this_current,
     other_current_screen_border=COLOR.groupbox_other_current,
     highlight_method='line',
-    highlight_color=[CS["c_3"], CS["c_3"]],
+    highlight_color=[CS["color3"], CS["color3"]],
     disable_drag=True,
     # hide_unused=True,
     borderwidth=1,
@@ -239,15 +239,15 @@ main_groupbox = widget.GroupBox(
     )
 
 secondary_groupbox = widget.GroupBox(
-    active=CS["c_0"],
-    background=CS["c_7"],
-    inactive=CS["c_0"],
+    active=CS["background"],
+    background=CS["color7"],
+    inactive=CS["background"],
     this_screen_border=COLOR.groupbox_this,
     other_screen_border=COLOR.groupbox_other,
     this_current_screen_border=COLOR.groupbox_this_current,
     other_current_screen_border=COLOR.groupbox_other_current,
     highlight_method='line',
-    highlight_color=[CS["c_3"], CS["c_3"]],
+    highlight_color=[CS["color3"], CS["color3"]],
     disable_drag=True,
     # hide_unused=True,
     borderwidth=1,
@@ -274,19 +274,19 @@ main_top_widgets = [
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(MENU_POWER)
         },
-        foreground=CS["c_7"],),
+        foreground=CS["color1"],),
 
     widget.Spacer(5),
 
     widget.CurrentLayoutIcon(
-        background=CS["c_7"],
-        foreground=CS["c_0"],
+        background=CS["color7"],
+        foreground=CS["color0"],
         decorations=decorations,
         scale=0.8),
 
     widget.WindowCount(
-        background=CS["c_7"], 
-        foreground=CS["c_0"], 
+        background=CS["color7"], 
+        foreground=CS["color0"], 
         show_zero=True,
         decorations=decorations),
 
@@ -334,8 +334,8 @@ main_top_widgets = [
     widget.Spacer(),
 
     widget.CPU(
-        background=CS["c_4"],
-        foreground="#FFF",
+        background=CS["color5"],
+        foreground=CS["color0"],
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(HTOP)
         },
@@ -347,8 +347,8 @@ main_top_widgets = [
     widget.Memory(
         format='RAM {MemUsed: .3f}{mm} / {MemTotal: .3f}{mm}',
         measure_mem='G',
-        background=CS["c_3"],
-        foreground="#FFF",
+        background=CS["color1"],
+        foreground=CS["color0"],
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(HTOP)
         },
@@ -374,8 +374,8 @@ main_top_widgets = [
             "Button3": lambda : qtile.spawn(MENU_WIFI)
         },
         update_interval=1, 
-        background=CS["c_6"],
-        foreground="#FFF",
+        background=CS["color8"],
+        foreground=CS["color0"],
         decorations=decorations,
         max_chars=20,
         **widget_defaults
@@ -385,8 +385,8 @@ main_top_widgets = [
     
     widget.Volume(
         fmt="  {}",
-        background=CS["c_7"],
-        foreground=CS["c_0"], 
+        background=CS["color7"],
+        foreground=CS["color0"], 
         mouse_callbacks={
             "Button3": lazy.spawn(APP_AUDIO_SETTINGS)
         },
@@ -398,15 +398,15 @@ main_top_widgets = [
     widget.GenPollText(
         func=lambda: subprocess.check_output(WIDGET_BATTERY).decode(),
         update_interval=1, 
-        background=CS["c_7"],
-        foreground=CS["c_0"],
+        background=CS["color7"],
+        foreground=CS["color0"],
         decorations=decorations,
         **icons_defaults
     ),
     
     widget.Battery(
-        background=CS["c_7"],
-        foreground=CS["c_0"],
+        background=CS["color7"],
+        foreground=CS["color0"],
         low_background=COLOR.battery_low.bg,
         low_foreground=COLOR.battery_low.fg,
         low_percentage=0.40,
@@ -426,8 +426,8 @@ main_top_widgets = [
 
     widget.Clock(
         format=f"%H:%M:%S | %d/%m/%y",
-        background=CS["c_7"],
-        foreground=CS["c_0"],
+        background=CS["color7"],
+        foreground=CS["color0"],
         decorations=decorations,
         mouse_callbacks={},
         **widget_defaults
@@ -442,7 +442,7 @@ main_top_widgets = [
         mouse_callbacks={
             "Button3": lambda : qtile.spawn(MENU_UTIL)
         },
-        foreground=CS["c_7"],),
+        foreground=CS["color7"],),
 
 #     widget.GithubNotifications(
 #         active_colour=COLOR.github_active,
@@ -483,8 +483,8 @@ secondary_top_widgets = [
 ]
 
 bar_style = dict(
-    background=CS["c_0"],
-    border_color=CS["c_0"],
+    background=CS["background"],
+    border_color=CS["background"],
     margin=[0, 0, 0, 0],
     border_width=0)
 

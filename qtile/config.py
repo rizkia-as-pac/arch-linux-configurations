@@ -104,6 +104,9 @@ keys = [
     Key([], "XF86AudioRaiseVolume", lazy.spawn("pactl set-sink-volume 0 +5%"), desc='Volume Up'),
     Key([], "XF86AudioLowerVolume", lazy.spawn("pactl set-sink-volume 0 -5%"), desc='volume down'),
     Key([], "XF86AudioMute", lazy.spawn("pactl set-sink-mute 0 toggle"), desc='Volume Mute'),
+
+    Key(["control"], "Escape", lazy.spawn("playerctl play-pause"), desc='Media play/pause'),
+
     Key([], "Print", lazy.spawn("flameshot gui"), desc='Launch screenshot'),
 ]
 
